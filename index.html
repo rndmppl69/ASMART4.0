@@ -27,20 +27,11 @@
         .card-header {
             background-color: #4a6491;
             color: white;
-            border-radius: 10px 10px 0 0 !important;
+            border-radius: 10px 10px 0 0;
             padding: 1rem 1.5rem;
         }
-        .btn-primary {
-            background-color: #3498db;
-            border: none;
+        .btn-primary, .btn-success, .btn-warning {
             padding: 0.5rem 2rem;
-        }
-        .btn-success {
-            background-color: #27ae60;
-            border: none;
-        }
-        .btn-warning {
-            background-color: #f39c12;
             border: none;
         }
         .table {
@@ -194,12 +185,12 @@
     </div>
 
     <!-- Modal Barang Lain -->
-    <div class="modal fade" id="modalBarangLain" tabindex="-1">
+    <div class="modal fade" id="modalBarangLain" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Barang Lain</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -474,27 +465,4 @@
 
         // Reset form untuk pengajuan baru
         function resetForm() {
-            // Reset semua field
-            document.getElementById('namaSeksi').value = '';
-            document.getElementById('nama').value = '';
-            document.getElementById('nip').value = '';
-            document.getElementById('barangSelect').value = '';
-            document.getElementById('jumlah').value = 1;
-            document.getElementById('keterangan').value = '';
-            
-            // Kosongkan daftar barang
-            daftarBarangDipilih = [];
-            updateTabelBarang();
-            
-            // Tampilkan form lagi
-            document.getElementById('statusSection').style.display = 'none';
-            document.getElementById('formSection').style.display = 'block';
-        }
-
-        // Tampilkan/sembunyikan loading
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'flex' : 'none';
-        }
-    </script>
-</body>
-</html>
+            // Reset
