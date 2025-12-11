@@ -15,12 +15,29 @@
         input, select { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 15px; }
         button { width: 100%; padding: 14px; background-color: #1a5fb4; color: white; border: none; border-radius: 8px; cursor: pointer; }
         button:hover { background-color: #155093; }
+        
+        /* Loading and Success Message */
+        .loading, .success-message {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            color: #1a5fb4;
+        }
+        
+        .success-message {
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>ASMART 3.0 - Form Permintaan Barang</h1>
+        <h1>ASMART 4.0 - Form Permintaan Barang</h1>
         <form id="orderForm">
             <label for="section">Nama Seksi:</label>
             <select id="section" name="section" required>
@@ -52,6 +69,10 @@
 
             <button type="submit">Kirim Permintaan</button>
         </form>
+
+        <!-- Loading and Success Messages -->
+        <div class="loading">Mengirimkan . . .</div>
+        <div class="success-message">Form Berhasil Dikirim!</div>
     </div>
 
     <script>
@@ -60,19 +81,31 @@
 
             var formData = new FormData(this);
 
+            // Show loading message and hide the form
+            document.querySelector(".loading").style.display = "block";
+            document.querySelector("form").style.display = "none";
+
             fetch('https://script.google.com/macros/s/AKfycbxzhEqKS7_XI-Wruhgwd39lkIgXIUEzWkjxnewwjahivPXM-lFpugyuPBlAvomAum_u/exec', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.text())
-            .then(data => alert("Form submitted successfully"))
-            .catch(error => console.error('Error:', error));
+            .then(data => {
+                // Show success message
+                document.querySelector(".success-message").style.display = "block";
+                setTimeout(function() {
+                    // Hide success message after 2 seconds
+                    document.querySelector(".success-message").style.display = "none";
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // If there's an error, show the form again and hide the loading message
+                document.querySelector(".loading").style.display = "none";
+                document.querySelector("form").style.display = "block";
+            });
         });
     </script>
 
 </body>
 </html>
-
-
-
-
