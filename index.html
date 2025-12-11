@@ -3,95 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASMART 4.0 - Pengajuan Barang</title>
+    <title>ASMART 4.0</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
-            color: white;
-            padding: 1.5rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: none;
-            margin-bottom: 1.5rem;
-        }
-        .card-header {
-            background-color: #4a6491;
-            color: white;
-            border-radius: 10px 10px 0 0;
-            padding: 1rem 1.5rem;
-        }
-        .btn-primary, .btn-success, .btn-warning {
-            padding: 0.5rem 2rem;
-            border: none;
-        }
-        .table {
-            background-color: white;
-        }
-        .required::after {
-            content: " *";
-            color: red;
-        }
-        .loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        body { background: #f8f9fa; font-family: Arial; }
+        .header { background: linear-gradient(135deg, #2c3e50, #4a6491); color: white; padding: 20px 0; }
+        .card { border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
+        <div class="mt-2" id="loadingText">Memuat...</div>
     </div>
 
-    <!-- Header -->
     <div class="header">
         <div class="container">
-            <h1><i class="bi bi-box-seam"></i> ASMART 4.0</h1>
-            <p class="lead">Sistem Pengajuan Barang Persediaan - KPPBC TMP C Manokwari</p>
+            <h1>ASMART 4.0</h1>
+            <p class="lead mb-0">Sistem Pengajuan Barang Persediaan</p>
         </div>
     </div>
 
-    <div class="container">
-        <!-- Form Pengajuan -->
+    <div class="container mt-4">
+        <!-- URL Info -->
+        <div class="alert alert-info mb-3">
+            <small>
+                <strong>Status:</strong> 
+                <span id="statusText">Menyiapkan sistem...</span>
+                <button class="btn btn-sm btn-outline-primary float-end" onclick="testConnection()">Test Koneksi</button>
+            </small>
+        </div>
+
+        <!-- Form Section -->
         <div class="card" id="formSection">
-            <div class="card-header">
-                <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Form Pengajuan Barang</h4>
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Form Pengajuan Barang</h4>
             </div>
             <div class="card-body">
                 <!-- Data Pegawai -->
-                <div class="row mb-4">
+                <div class="row mb-3">
                     <div class="col-md-4">
-                        <label class="form-label required">Nama Seksi</label>
+                        <label class="form-label">Nama Seksi *</label>
                         <select class="form-select" id="namaSeksi" required>
                             <option value="">Pilih Seksi</option>
                             <option value="Subbagian Umum">Subbagian Umum</option>
@@ -102,46 +57,44 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label required">Nama Pegawai</label>
-                        <input type="text" class="form-control" id="nama" required>
+                        <label class="form-label">Nama Pegawai *</label>
+                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label required">NIP</label>
-                        <input type="text" class="form-control" id="nip" required>
+                        <label class="form-label">NIP *</label>
+                        <input type="text" class="form-control" id="nip" placeholder="Masukkan NIP" required>
                     </div>
                 </div>
 
                 <!-- Pilih Barang -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label required">Pilih Barang</label>
+                <div class="row mb-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Pilih Barang *</label>
                         <select class="form-select" id="barangSelect">
-                            <option value="">Pilih Barang...</option>
-                            <!-- Barang akan diisi via JavaScript -->
+                            <option value="">Memuat daftar barang...</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label required">Jumlah</label>
+                        <label class="form-label">Jumlah *</label>
                         <input type="number" class="form-control" id="jumlah" min="1" value="1">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label">Keterangan</label>
-                        <input type="text" class="form-control" id="keterangan" placeholder="Contoh: Warna, Jenis, dll">
+                        <input type="text" class="form-control" id="keterangan" placeholder="Warna, jenis, dll">
                     </div>
                 </div>
 
-                <!-- Tombol Tambah Barang -->
-                <div class="mb-4">
+                <div class="mb-3">
                     <button class="btn btn-success" onclick="tambahBarang()">
                         <i class="bi bi-plus-circle"></i> Tambah ke Daftar
                     </button>
                     <button class="btn btn-warning" onclick="tambahBarangLain()">
-                        <i class="bi bi-plus-lg"></i> Barang Lain (Tidak ada di list)
+                        <i class="bi bi-plus-lg"></i> Barang Lain
                     </button>
                 </div>
 
-                <!-- Daftar Barang yang Dipilih -->
-                <div class="table-responsive">
+                <!-- Daftar Barang -->
+                <div class="table-responsive mb-4">
                     <table class="table table-bordered" id="daftarBarang">
                         <thead class="table-light">
                             <tr>
@@ -151,55 +104,62 @@
                                 <th width="80">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Barang akan ditambahkan di sini -->
+                        <tbody id="barangBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Belum ada barang yang dipilih</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Tombol Submit -->
-                <div class="text-end mt-4">
-                    <button class="btn btn-primary btn-lg" onclick="submitForm()">
-                        <i class="bi bi-send"></i> Ajukan Permintaan
-                    </button>
+                <div class="text-end">
+                    <button class="btn btn-primary btn-lg" onclick="submitForm()">Ajukan Permintaan</button>
                 </div>
             </div>
         </div>
 
-        <!-- Status Pengajuan -->
-        <div class="card" id="statusSection" style="display: none;">
-            <div class="card-header bg-success">
-                <h4 class="mb-0"><i class="bi bi-check-circle"></i> Pengajuan Berhasil!</h4>
+        <!-- Success Section -->
+        <div class="card" id="successSection" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Pengajuan Berhasil!</h4>
             </div>
             <div class="card-body text-center">
-                <h3 class="text-success mb-4">
-                    <i class="bi bi-check-circle-fill"></i> Permintaan Barang Telah Diajukan
-                </h3>
-                <p class="lead">Nomor Pengajuan: <strong id="nomorPengajuan">-</strong></p>
-                <p>Silakan cek email Anda untuk konfirmasi dan tracking status pengajuan.</p>
-                <button class="btn btn-primary" onclick="resetForm()">
-                    <i class="bi bi-plus-circle"></i> Ajukan Barang Lagi
-                </button>
+                <h3 class="text-success mb-3">✓ Permintaan Telah Diajukan</h3>
+                <p>Nomor Pengajuan: <strong id="nomorPengajuan"></strong></p>
+                <p id="successMessage"></p>
+                <button class="btn btn-primary" onclick="resetForm()">Ajukan Lagi</button>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="card" id="errorSection" style="display: none;">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Terjadi Kesalahan</h4>
+            </div>
+            <div class="card-body text-center">
+                <h3 class="text-danger mb-3">✗ Gagal Mengajukan</h3>
+                <p id="errorMessage"></p>
+                <button class="btn btn-primary" onclick="resetForm()">Coba Lagi</button>
             </div>
         </div>
     </div>
 
     <!-- Modal Barang Lain -->
-    <div class="modal fade" id="modalBarangLain" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalBarangLain">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Barang Lain</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label required">Nama Barang</label>
+                        <label class="form-label">Nama Barang *</label>
                         <input type="text" class="form-control" id="namaBarangLain">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label required">Jumlah</label>
-                        <input type="number" class="form-control" id="jumlahBarangLain" min="1">
+                        <label class="form-label">Jumlah *</label>
+                        <input type="number" class="form-control" id="jumlahBarangLain" min="1" value="1">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Keterangan</label>
@@ -214,82 +174,133 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // URL Google Apps Script Web App (GANTI DENGAN URL ANDA)
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzhEqKS7_XI-Wruhgwd39lkIgXIUEzWkjxnewwjahivPXM-lFpugyuPBlAvomAum_u/exec";
+        // ==================== KONFIGURASI ====================
+        // GANTI URL INI DENGAN URL WEB APP ANDA
+        let SCRIPT_URL = "https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec";
+        
+        // Cek jika ada URL yang disimpan di localStorage
+        if (localStorage.getItem('asmart_url')) {
+            SCRIPT_URL = localStorage.getItem('asmart_url');
+        } else {
+            // Minta URL jika belum ada
+            const savedUrl = prompt("Masukkan URL Web App Google Apps Script Anda:", SCRIPT_URL);
+            if (savedUrl) {
+                SCRIPT_URL = savedUrl;
+                localStorage.setItem('asmart_url', SCRIPT_URL);
+            }
+        }
+        
+        document.getElementById('statusText').textContent = 'Menggunakan URL: ' + SCRIPT_URL.substring(0, 50) + '...';
         
         let daftarBarangDipilih = [];
         let barangList = [];
 
-        // Inisialisasi saat halaman dimuat
+        // ==================== INISIALISASI ====================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('ASMART 4.0 loaded');
+            console.log('Script URL:', SCRIPT_URL);
             loadDaftarBarang();
         });
 
-        // Load daftar barang dari Spreadsheet
+        // ==================== FUNGSI BARANG ====================
         async function loadDaftarBarang() {
-            showLoading(true);
+            showLoading('Memuat daftar barang...');
+            
             try {
-                const response = await fetch(SCRIPT_URL + "?action=getBarang");
-                const data = await response.json();
+                const url = SCRIPT_URL + '?action=getBarang&t=' + Date.now();
+                console.log('Fetching from:', url);
                 
-                if (data.success) {
-                    barangList = data.data;
-                    const select = document.getElementById('barangSelect');
-                    
-                    // Kosongkan dulu
-                    select.innerHTML = '<option value="">Pilih Barang...</option>';
-                    
-                    // Tambahkan opsi barang
-                    data.data.forEach(barang => {
-                        const option = document.createElement('option');
-                        option.value = barang.id;
-                        option.textContent = `${barang.nama} (${barang.kategori}) - Stok: ${barang.stok}`;
-                        option.setAttribute('data-satuan', barang.satuan);
-                        select.appendChild(option);
-                    });
-                    
-                    // Tambahkan opsi barang lain
-                    const optionLain = document.createElement('option');
-                    optionLain.value = "lainnya";
-                    optionLain.textContent = "--- Barang Lain (Tidak ada di list) ---";
-                    select.appendChild(optionLain);
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
                 }
+                
+                const result = await response.json();
+                console.log('Barang data:', result);
+                
+                if (result.success && result.data) {
+                    barangList = result.data;
+                    updateBarangSelect();
+                    document.getElementById('statusText').textContent = 'Sistem siap. ' + barangList.length + ' barang tersedia.';
+                } else {
+                    throw new Error(result.message || 'Data tidak valid');
+                }
+                
             } catch (error) {
                 console.error('Error loading barang:', error);
-                alert('Gagal memuat daftar barang. Silakan refresh halaman.');
+                // Gunakan data fallback
+                useFallbackData();
+                document.getElementById('statusText').textContent = 'Menggunakan data lokal: ' + error.message;
             } finally {
                 showLoading(false);
             }
         }
 
-        // Tambah barang yang dipilih ke daftar
+        function useFallbackData() {
+            barangList = [
+                { id: 1, nama: 'Balliner', kategori: 'ATK', satuan: 'Pak', stok: 100 },
+                { id: 2, nama: 'Spidol', kategori: 'ATK', satuan: 'Pak', stok: 50 },
+                { id: 3, nama: 'Toner Printer', kategori: 'Elektronik', satuan: 'Pcs', stok: 20 },
+                { id: 4, nama: 'Tissue', kategori: 'Kebersihan', satuan: 'Pcs', stok: 200 },
+                { id: 5, nama: 'Kertas A4', kategori: 'ATK', satuan: 'Rim', stok: 30 },
+                { id: 6, nama: 'Kertas F4', kategori: 'ATK', satuan: 'Rim', stok: 25 },
+                { id: 7, nama: 'Pengharum Ruangan', kategori: 'Kebersihan', satuan: 'Pcs', stok: 40 },
+                { id: 8, nama: 'Paper Clip', kategori: 'ATK', satuan: 'Box', stok: 15 },
+                { id: 9, nama: 'Stapler', kategori: 'ATK', satuan: 'Pcs', stok: 10 },
+                { id: 10, nama: 'Isi Stapler', kategori: 'ATK', satuan: 'Box', stok: 20 }
+            ];
+            
+            updateBarangSelect();
+        }
+
+        function updateBarangSelect() {
+            const select = document.getElementById('barangSelect');
+            select.innerHTML = '<option value="">Pilih Barang...</option>';
+            
+            barangList.forEach(barang => {
+                const option = document.createElement('option');
+                option.value = barang.id;
+                option.textContent = `${barang.nama} - Stok: ${barang.stok}`;
+                option.setAttribute('data-satuan', barang.satuan);
+                select.appendChild(option);
+            });
+            
+            // Tambah opsi barang lain
+            const optionLain = document.createElement('option');
+            optionLain.value = "lainnya";
+            optionLain.textContent = "--- Barang Lain ---";
+            select.appendChild(optionLain);
+        }
+
         function tambahBarang() {
-            const barangSelect = document.getElementById('barangSelect');
+            const select = document.getElementById('barangSelect');
             const jumlah = document.getElementById('jumlah').value;
             const keterangan = document.getElementById('keterangan').value;
             
-            if (!barangSelect.value) {
+            if (!select.value) {
                 alert('Pilih barang terlebih dahulu!');
                 return;
             }
             
-            if (!jumlah || jumlah < 1) {
-                alert('Jumlah harus diisi dengan angka positif!');
+            if (select.value === 'lainnya') {
+                tambahBarangLain();
                 return;
             }
             
-            // Cari data barang
-            const barang = barangList.find(b => b.id == barangSelect.value);
+            if (!jumlah || jumlah < 1) {
+                alert('Jumlah harus angka positif!');
+                return;
+            }
             
+            const barang = barangList.find(b => b.id == select.value);
             if (!barang) {
                 alert('Barang tidak ditemukan!');
                 return;
             }
             
-            // Tambahkan ke array
             daftarBarangDipilih.push({
                 id: barang.id,
                 nama: barang.nama,
@@ -298,44 +309,38 @@
                 satuan: barang.satuan
             });
             
-            // Update tabel
             updateTabelBarang();
             
-            // Reset form
-            barangSelect.value = '';
+            // Reset
+            select.value = '';
             document.getElementById('jumlah').value = 1;
             document.getElementById('keterangan').value = '';
         }
 
-        // Tambah barang lain
         function tambahBarangLain() {
-            // Reset modal
             document.getElementById('namaBarangLain').value = '';
             document.getElementById('jumlahBarangLain').value = 1;
             document.getElementById('keteranganBarangLain').value = '';
             
-            // Tampilkan modal
             const modal = new bootstrap.Modal(document.getElementById('modalBarangLain'));
             modal.show();
         }
 
-        // Submit barang lain
         function tambahBarangLainSubmit() {
             const nama = document.getElementById('namaBarangLain').value;
             const jumlah = document.getElementById('jumlahBarangLain').value;
             const keterangan = document.getElementById('keteranganBarangLain').value;
             
-            if (!nama) {
+            if (!nama.trim()) {
                 alert('Nama barang harus diisi!');
                 return;
             }
             
             if (!jumlah || jumlah < 1) {
-                alert('Jumlah harus diisi dengan angka positif!');
+                alert('Jumlah harus angka positif!');
                 return;
             }
             
-            // Tambahkan ke array
             daftarBarangDipilih.push({
                 id: 'lainnya',
                 nama: nama,
@@ -344,125 +349,176 @@
                 satuan: 'Pcs'
             });
             
-            // Update tabel
             updateTabelBarang();
             
-            // Tutup modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalBarangLain'));
             modal.hide();
         }
 
-        // Update tabel barang yang dipilih
         function updateTabelBarang() {
-            const tbody = document.querySelector('#daftarBarang tbody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('barangBody');
             
             if (daftarBarangDipilih.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada barang yang dipilih</td></tr>';
                 return;
             }
             
+            let html = '';
             daftarBarangDipilih.forEach((barang, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${barang.nama}</td>
-                    <td>${barang.jumlah} ${barang.satuan}</td>
-                    <td>${barang.keterangan || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="hapusBarang(${index})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
+                html += `
+                    <tr>
+                        <td>${barang.nama}</td>
+                        <td>${barang.jumlah} ${barang.satuan}</td>
+                        <td>${barang.keterangan || '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="hapusBarang(${index})">
+                                Hapus
+                            </button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(row);
             });
+            
+            tbody.innerHTML = html;
         }
 
-        // Hapus barang dari daftar
         function hapusBarang(index) {
             daftarBarangDipilih.splice(index, 1);
             updateTabelBarang();
         }
 
-        // Submit form ke Google Apps Script
+        // ==================== FUNGSI FORM ====================
         async function submitForm() {
-            // Validasi form
             const namaSeksi = document.getElementById('namaSeksi').value;
             const nama = document.getElementById('nama').value;
             const nip = document.getElementById('nip').value;
             
+            // Validasi
             if (!namaSeksi || !nama || !nip) {
-                alert('Harap lengkapi data pegawai terlebih dahulu!');
+                alert('Lengkapi semua data pegawai!');
                 return;
             }
             
             if (daftarBarangDipilih.length === 0) {
-                alert('Tambahkan minimal satu barang ke daftar!');
+                alert('Tambahkan minimal satu barang!');
                 return;
             }
             
-            showLoading(true);
+            showLoading('Mengirim pengajuan...');
             
+            // Siapkan data
             const data = {
-                action: 'submitPengajuan',
                 namaSeksi: namaSeksi,
                 nama: nama,
                 nip: nip,
-                barang: daftarBarangDipilih
+                barang: JSON.stringify(daftarBarangDipilih)
             };
             
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Mode no-cors untuk Google Apps Script
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+                // Encode sebagai URL parameters
+                let params = `action=submitPengajuan`;
+                params += `&namaSeksi=${encodeURIComponent(data.namaSeksi)}`;
+                params += `&nama=${encodeURIComponent(data.nama)}`;
+                params += `&nip=${encodeURIComponent(data.nip)}`;
+                params += `&barang=${encodeURIComponent(data.barang)}`;
+                params += `&t=${Date.now()}`;
                 
-                // Karena menggunakan no-cors, kita tidak bisa membaca response langsung
-                // Alternatif: Gunakan metode GET dengan parameter URL
-                await submitViaGet(data);
+                const url = SCRIPT_URL + '?' + params;
+                console.log('Submitting to:', url);
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                if (result.success) {
+                    showSuccess(result.data);
+                } else {
+                    throw new Error(result.message || 'Gagal mengajukan');
+                }
                 
             } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
+                console.error('Submit error:', error);
+                showError(error.message);
             } finally {
                 showLoading(false);
             }
         }
 
-        // Alternatif submit menggunakan GET (karena Apps Script punya batasan CORS)
-        async function submitViaGet(data) {
-            // Buat parameter URL
-            let params = `action=submitPengajuan`;
-            params += `&namaSeksi=${encodeURIComponent(data.namaSeksi)}`;
-            params += `&nama=${encodeURIComponent(data.nama)}`;
-            params += `&nip=${encodeURIComponent(data.nip)}`;
-            params += `&barang=${encodeURIComponent(JSON.stringify(data.barang))}`;
+        async function testConnection() {
+            showLoading('Menguji koneksi...');
             
             try {
-                const response = await fetch(SCRIPT_URL + "?" + params);
+                const url = SCRIPT_URL + '?action=test&t=' + Date.now();
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Tampilkan status sukses
-                    document.getElementById('formSection').style.display = 'none';
-                    document.getElementById('nomorPengajuan').textContent = result.noPengajuan;
-                    document.getElementById('statusSection').style.display = 'block';
+                    alert('✅ Koneksi berhasil!\n\n' + 
+                          'Web App berjalan normal.\n' +
+                          'Timestamp: ' + result.data.timestamp);
                 } else {
-                    alert('Gagal mengajukan: ' + result.message);
+                    throw new Error(result.message);
                 }
+                
             } catch (error) {
-                console.error('Error:', error);
-                alert('Pengajuan berhasil, tetapi ada masalah dengan respons server.');
-                // Tetap anggap sukses untuk UX
-                document.getElementById('formSection').style.display = 'none';
-                document.getElementById('statusSection').style.display = 'block';
+                alert('❌ Koneksi gagal!\n\nError: ' + error.message);
+            } finally {
+                showLoading(false);
             }
         }
 
-        // Reset form untuk pengajuan baru
+        function showSuccess(data) {
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+            
+            document.getElementById('nomorPengajuan').textContent = data.noPengajuan || 'TEST-' + Date.now();
+            document.getElementById('successMessage').textContent = data.message || 'Pengajuan berhasil diterima';
+            document.getElementById('successSection').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('successSection').style.display = 'none';
+            
+            document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan yang tidak diketahui';
+            document.getElementById('errorSection').style.display = 'block';
+        }
+
         function resetForm() {
-            // Reset
+            // Reset form
+            document.getElementById('namaSeksi').value = '';
+            document.getElementById('nama').value = '';
+            document.getElementById('nip').value = '';
+            document.getElementById('barangSelect').value = '';
+            document.getElementById('jumlah').value = 1;
+            document.getElementById('keterangan').value = '';
+            
+            // Reset daftar
+            daftarBarangDipilih = [];
+            updateTabelBarang();
+            
+            // Tampilkan form lagi
+            document.getElementById('successSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+            document.getElementById('formSection').style.display = 'block';
+        }
+
+        function showLoading(message) {
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            
+            if (message) {
+                loading.style.display = 'flex';
+                loadingText.textContent = message;
+            } else {
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
