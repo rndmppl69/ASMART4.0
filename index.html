@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASMART 4.0 - Form Permintaan Barang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        * {
     <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -445,15 +445,15 @@
         @keyframes checkmarkDraw {
             0% { 
                 opacity: 0;
-                transform: scale(0.5) rotate(-45deg);
+                transform: scale(0.5) rotate(0deg);
             }
             50% { 
                 opacity: 1;
-                transform: scale(1.1) rotate(-45deg);
+                transform: scale(1.1) rotate(0deg);
             }
             100% { 
                 opacity: 1;
-                transform: scale(1) rotate(-45deg);
+                transform: scale(1) rotate(0deg);
             }
         }
         
@@ -899,7 +899,8 @@
 
     <script>
         // Google Apps Script URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhEqKS7_XI-Wruhgwd39lkIgXIUEzWkjxnewwjahivPXM-lFpugyuPBlAvomAum_u/exec';
+        // GANTI DENGAN URL WEB APP YANG ANDA DAPATKAN SETELAH MEN-DEPLOY SKRIP GOOGLE APPS SCRIPT
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhEqKS7_XI-Wruhgwd39lkIgXIUEzWkjxnewwjahivPXM-lFpugyuPBlAvomAum_u/exec'; 
         
         // DOM Elements
         const orderForm = document.getElementById('orderForm');
@@ -1260,25 +1261,18 @@
                 
                 // Check if response is OK
                 if (response.ok) {
-                    const result = await response.text();
+                    const result = await response.json(); // Parse response as JSON
                     console.log('Success:', result);
                     
                     // Try to extract request ID from response
-                    let requestId = '';
-                    try {
-                        const jsonResult = JSON.parse(result);
-                        requestId = jsonResult.requestId || '';
-                    } catch (e) {
-                        // If response is not JSON, look for request ID in text
-                        const match = result.match(/REQ-\d{6}-\d{3}/);
-                        if (match) requestId = match[0];
-                    }
+                    let requestId = result.requestId || '';
                     
                     // Show success modal
                     showSuccess(requestId);
                     
                 } else {
-                    throw new Error(`Gagal mengirim data. Status: ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`Gagal mengirim data. Status: ${response.status}. Respon: ${errorText}`);
                 }
                 
             } catch (error) {
