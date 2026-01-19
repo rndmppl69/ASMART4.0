@@ -928,16 +928,21 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            // Checkbox toggle for item cards
+            // Checkbox toggle for item cards - MODIFIED: Set default quantity to 1 when checked
             document.querySelectorAll('.item-card input[type="checkbox"]').forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     const itemCard = this.closest('.item-card');
                     if (this.checked) {
                         itemCard.classList.add('selected');
-                        // Focus on quantity input
+                        // Set default quantity to 1 instead of 0
                         const quantityInput = itemCard.querySelector('.quantity-input');
                         if (quantityInput) {
+                            // Hanya set ke 1 jika nilainya 0 atau kosong
+                            if (parseInt(quantityInput.value) <= 0 || !quantityInput.value) {
+                                quantityInput.value = '1';
+                            }
                             quantityInput.focus();
+                            quantityInput.select(); // Pilih teks agar mudah diubah
                         }
                     } else {
                         itemCard.classList.remove('selected');
@@ -951,7 +956,7 @@
                 });
             });
             
-            // Item card click (toggle selection)
+            // Item card click (toggle selection) - MODIFIED: Set default quantity to 1 when selected
             document.querySelectorAll('.item-card').forEach(card => {
                 card.addEventListener('click', function(e) {
                     // Don't toggle if click is on input field or checkbox
@@ -959,15 +964,43 @@
                     
                     const checkbox = this.querySelector('input[type="checkbox"]');
                     if (checkbox) {
+                        const wasChecked = checkbox.checked;
                         checkbox.checked = !checkbox.checked;
                         checkbox.dispatchEvent(new Event('change'));
+                        
+                        // Jika item baru dipilih, set quantity ke 1
+                        if (!wasChecked && checkbox.checked) {
+                            const quantityInput = this.querySelector('.quantity-input');
+                            if (quantityInput && (parseInt(quantityInput.value) <= 0 || !quantityInput.value)) {
+                                quantityInput.value = '1';
+                            }
+                        }
                     }
                 });
             });
             
-            // Quantity input changes
+            // Quantity input changes with validation - MODIFIED: Ensure quantity is not negative
             document.querySelectorAll('.quantity-input').forEach(input => {
-                input.addEventListener('input', updateItemCount);
+                input.addEventListener('input', function() {
+                    // Pastikan nilai tidak negatif
+                    if (parseInt(this.value) < 0) {
+                        this.value = '0';
+                    }
+                    updateItemCount();
+                });
+                
+                // Validasi saat kehilangan fokus
+                input.addEventListener('blur', function() {
+                    // Jika item dipilih (checkbox checked) dan quantity 0, set ke 1
+                    const itemCard = this.closest('.item-card');
+                    const checkbox = itemCard.querySelector('input[type="checkbox"]');
+                    if (checkbox && checkbox.checked) {
+                        if (parseInt(this.value) <= 0 || !this.value) {
+                            this.value = '1';
+                        }
+                    }
+                    updateItemCount();
+                });
             });
             
             // Add additional item button
@@ -1297,7 +1330,7 @@
             });
             
             document.querySelectorAll('.quantity-input').forEach(input => {
-                input.value = '0';
+                input.value = '0'; // Tetap reset ke 0
             });
             
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
